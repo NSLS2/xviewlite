@@ -7,7 +7,7 @@ from databroker._drivers.mongo_normalized import BlueskyMongoCatalog
 from suitcase.mongo_normalized import Serializer
 import time as ttime
 import pkg_resources
-spectrum_start_path = pkg_resources.resource_filename('xview', 'spectra_db/spectrum_start.json')
+spectrum_start_path = pkg_resources.resource_filename('xviewlite', 'spectra_db/spectrum_start.json')
 import json
 import jsonschema
 import os

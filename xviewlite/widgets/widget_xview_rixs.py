@@ -15,8 +15,8 @@ from pathlib import Path
 
 from matplotlib.figure import Figure
 from xas.xasproject import XASDataSet
-from isstools.elements.figure_update import update_figure
-from isstools.dialogs.BasicDialogs import message_box
+from elements.figure_update import update_figure
+from dialogs.BasicDialogs import message_box
 from xas.file_io import load_binned_df_from_file
 
 from xas.spectrometer import parse_rixs_scan, parse_rixslog_scan
@@ -24,9 +24,9 @@ import h5py
 
 
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_data-mac.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_data-mac.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_rixs.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_rixs.ui')
 
 
 class UIXviewRIXS(*uic.loadUiType(ui_path)):

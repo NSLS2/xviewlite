@@ -12,23 +12,23 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     NavigationToolbar2QT as NavigationToolbar
 from sys import platform
 from pathlib import Path
-from isstools.dialogs.BasicDialogs import message_box
+from dialogs.BasicDialogs import message_box
 from matplotlib.figure import Figure
-from isstools.elements.figure_update import update_figure
+from elements.figure_update import update_figure
 
 from xas.xray import k2e, e2k
 from xas.file_io import load_binned_df_from_file
 from xas.xasproject import XASDataSet
-from xview.dialogs.MetadataDialog import MetadataDialog
-# from xview.spectra_db.db_io import save_spectrum_to_db
+from xviewlite.dialogs.MetadataDialog import MetadataDialog
+# from xviewlite.spectra_db.db_io import save_spectrum_to_db
 
 from os.path import expanduser
 
 
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_stats-mac.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_stats-mac.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_stats.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_stats.ui')
 
 
 class UIXviewStats(*uic.loadUiType(ui_path)):

@@ -16,17 +16,17 @@ from pathlib import Path
 
 from matplotlib.figure import Figure
 # from xas.xasproject import XASDataSet
-# from isstools.elements.figure_update import update_figure
-# from isstools.dialogs.BasicDialogs import message_box
+# from elements.figure_update import update_figure
+# from dialogs.BasicDialogs import message_box
 # from xas.file_io import load_binned_df_from_file, load_binned_df_and_extended_data_from_file
 import copy
-from xview.dialogs.FileMetadataDialog import FileMetadataDialog
-from xview.xfit_classes.workers import Worker_Retrive_MatProj_Data as worker_matproj
+from xviewlite.dialogs.FileMetadataDialog import FileMetadataDialog
+from xviewlite.xfit_classes.workers import Worker_Retrive_MatProj_Data as worker_matproj
 
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xfit.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xfit.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xfit.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xfit.ui')
 
 
 class UIXFIT(*uic.loadUiType(ui_path)):

@@ -10,7 +10,7 @@ import versioneer
 min_version = (3, 6)
 if sys.version_info < min_version:
     error = """
-xview does not support Python {0}.{1}.
+xviewlite does not support Python {0}.{1}.
 Python {2}.{3} and above is required. Check your Python version like so:
 
 python3 --version
@@ -34,7 +34,7 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
 
 
 setup(
-    name='xview',
+    name='xviewlite',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description="ISS data visualisation",
@@ -51,9 +51,9 @@ setup(
     },
     include_package_data=True,
     package_data={
-        'xview': [
-            'xview/spectra_db/*.json',
-            'xview/ui/*.ui',
+        'xviewlite': [
+            'xviewlite/spectra_db/*.json',
+            'xviewlite/ui/*.ui',
         ]
     },
     install_requires=requirements,

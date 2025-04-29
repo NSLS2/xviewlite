@@ -1,7 +1,7 @@
 from PyQt5 import uic, QtGui, QtCore
 import pkg_resources
 
-ui_path = pkg_resources.resource_filename('xview', 'dialogs/MetadataDialog.ui')
+ui_path = pkg_resources.resource_filename('xviewlite', 'dialogs/MetadataDialog.ui')
 
 class MetadataDialog(*uic.loadUiType(ui_path)):
 

@@ -33,15 +33,15 @@ from pathlib import Path
 import pandas as pd
 
 
-from isstools.dialogs.BasicDialogs import message_box
+from dialogs.BasicDialogs import message_box
 
 
 
 
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_databroker.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_databroker.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_databroker.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_databroker.ui')
 
 
 class UIXviewDatabroker(*uic.loadUiType(ui_path)):

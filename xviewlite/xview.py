@@ -1,20 +1,19 @@
 import sys
 import pkg_resources
 from PyQt5 import  QtWidgets, uic
-# from xview.xasproject.xasproject import XASProject
+# from xviewlite.xasproject.xasproject import XASProject
 from xas.xasproject import XASProject
-from isscloudtools.cloud_dispatcher import CloudDispatcher
-from isscloudtools.initialize import get_dropbox_service
-from issfactortools.widgets import widget_main as widget_mcr
-from xview.widgets import widget_xview_data, widget_xview_project, widget_xview_databroker, \
+
+#from issfactortools.widgets import widget_main as widget_mcr
+from widgets import widget_xview_data, widget_xview_project, \
     widget_xview_rixs , widget_xview_stats, widget_xview_xfit
 
 
 if sys.platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview-mac.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview-mac.ui')
     print('mac')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview.ui')
 
 class XviewGui(*uic.loadUiType(ui_path)):
     def __init__(self,
@@ -22,31 +21,22 @@ class XviewGui(*uic.loadUiType(ui_path)):
                  db_catalog=None,
                  *args, **kwargs):
 
-        self.db = db
+        #self.db = db
         # self.db_proc = db_proc
         super().__init__(*args, **kwargs)
         self.setupUi(self)
 
         self.project = XASProject()
 
-        try:
-            self.dropbox_service = get_dropbox_service()
-        except:
-            print("Cloud services cannot be connected")
-            self.dropbox_service = None
 
-        try:
-            self.cloud_dispatcher = CloudDispatcher(dropbox_service=self.dropbox_service)
-        except Exception as e:
-            print(f'Could not initialize cloud dispatcher:\n{e}')
-            self.cloud_dispatcher = None
 
-        self.widget_data = widget_xview_data.UIXviewData(db=db, parent=self)
+
+        self.widget_data = widget_xview_data.UIXviewData( parent=self)
         self.layout_data.addWidget(self.widget_data)
 
         # try:
         #     print(None)
-        #     self.widget_wip = widget_xview_wip.UIXviewWIP(db=db, parent=self)
+        #     self.widget_wip = widget_xview_wip.UIXviewWIP( parent=self)
         #     self.layout_wip.addWidget(self.widget_wip)
         # except:
         #     print('it did not work')
@@ -54,15 +44,11 @@ class XviewGui(*uic.loadUiType(ui_path)):
 
 
 
-        self.widget_project = widget_xview_project.UIXviewProject(db_proc=db_proc,
-                                                                  cloud_dispatcher = self.cloud_dispatcher,
-                                                                  parent=self)
+        self.widget_project = widget_xview_project.UIXviewProject(parent=self)
         self.layout_project.addWidget(self.widget_project)
 
-        self.widget_statistics = widget_xview_stats.UIXviewStats(db_proc=db_proc,
-                                                                  cloud_dispatcher = self.cloud_dispatcher,
-                                                                  parent=self)
-        self.layout_statistics.addWidget(self.widget_statistics)
+        # self.widget_statistics = widget_xview_stats.UIXviewStats(parent=self)
+        # self.layout_statistics.addWidget(self.widget_statistics)
 
 
 
@@ -82,15 +68,13 @@ class XviewGui(*uic.loadUiType(ui_path)):
         #                                                                                    add_open_button=False,
         #                                                                                    add_mcr_button=True)
         #     self.layout_databroker_proc.addWidget(self.widget_databroker_proc)
+        #
+        # self.widget_rixs = widget_xview_rixs.UIXviewRIXS(parent=self)
+        # self.layout_rixs.addWidget(self.widget_rixs)
 
-        self.widget_rixs = widget_xview_rixs.UIXviewRIXS(db=db, parent=self)
-        self.layout_rixs.addWidget(self.widget_rixs)
 
-        self.widget_mcr = widget_mcr.FactorAnalysisGUI(parent=self)
-        self.layout_mcr.addWidget(self.widget_mcr)
-
-        self.widget_xfit = widget_xview_xfit.UIXFIT(parent=self)
-        self.verticalLayout_for_xfit.addWidget(self.widget_xfit)
+        # self.widget_xfit = widget_xview_xfit.UIXFIT(parent=self)
+        # self.verticalLayout_for_xfit.addWidget(self.widget_xfit)
 
 
 
@@ -106,5 +90,3 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     main = XviewGui()
     main.show()
-
-    sys.exit(app.exec_())
