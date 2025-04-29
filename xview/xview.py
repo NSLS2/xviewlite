@@ -18,8 +18,6 @@ else:
 
 class XviewGui(*uic.loadUiType(ui_path)):
     def __init__(self,
-                 db=None,
-                 db_proc=None,
                  db_archive_catalog=None,
                  db_catalog=None,
                  *args, **kwargs):
