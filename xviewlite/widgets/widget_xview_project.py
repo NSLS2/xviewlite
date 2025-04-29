@@ -3,7 +3,7 @@ import os
 import matplotlib.patches as mpatches
 import numpy as np
 import pandas as pd
-import pkg_resources
+
 from PyQt5 import QtGui, QtWidgets, QtCore, uic
 from PyQt5.Qt import QSplashScreen, QObject
 from PyQt5.QtCore import QSettings, QThread, pyqtSignal, QTimer, QDateTime
@@ -17,7 +17,7 @@ from pathlib import Path
 from dialogs.BasicDialogs import message_box
 from matplotlib.figure import Figure
 from elements.figure_update import update_figure
-
+import sys
 from xas.xray import k2e, e2k
 from xas.file_io import load_binned_df_from_file, dump_tiff_images
 from xas.xasproject import XASDataSet
@@ -26,14 +26,14 @@ from xviewlite.dialogs.MetadataDialog import MetadataDialog
 from matplotlib import pyplot as plt
 from os.path import expanduser
 from scipy.stats import zscore
+from importlib import resources
 
-
-
-if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_project-mac.ui')
+if sys.platform == 'darwin':
+    with resources.path('xviewlite.ui', 'ui_xview_project-mac.ui') as path:
+        ui_path = str(path)
 else:
-    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_project.ui')
-
+    with resources.path('xviewlite.ui', 'ui_xview_project.ui') as path:
+        ui_path = str(path)
 
 class UIXviewProject(*uic.loadUiType(ui_path)):
         def __init__(self, db_proc=None,

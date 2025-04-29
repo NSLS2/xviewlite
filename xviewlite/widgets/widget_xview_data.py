@@ -2,7 +2,7 @@ import os
 import matplotlib.patches as mpatches
 import numpy as np
 import pandas as pd
-import pkg_resources
+import sys
 
 from PyQt5 import  QtWidgets, QtCore, uic
 from PyQt5.QtCore import QSettings
@@ -22,12 +22,14 @@ from xas.file_io import load_binned_df_from_file, load_binned_df_and_extended_da
 import copy
 from xviewlite.dialogs.FileMetadataDialog import FileMetadataDialog
 
-if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_data-mac.ui')
+from importlib import resources
+
+if sys.platform == 'darwin':
+    with resources.path('xviewlite.ui', 'ui_xview_data-mac.ui') as path:
+        ui_path = str(path)
 else:
-    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_data.ui')
-
-
+    with resources.path('xviewlite.ui', 'ui_xview_data.ui') as path:
+        ui_path = str(path)
 class UIXviewData(*uic.loadUiType(ui_path)):
     def __init__(self, db=None, parent=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
