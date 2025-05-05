@@ -2,9 +2,9 @@ import sys
 from importlib import resources
 from PyQt5 import  QtWidgets, uic
 
-from .xviewlite.xasproject.xasproject import XASProject
+from xas.xasproject import XASProject
 
-from widgets import widget_xview_data, widget_xview_project
+from widgets import widget_xview_data, widget_xview_project, widget_xview_xfit
 if sys.platform == 'darwin':
     with resources.path('xviewlite.ui', 'ui_xview-mac.ui') as path:
         ui_path = str(path)
@@ -25,6 +25,9 @@ class XviewGui(*uic.loadUiType(ui_path)):
 
         self.widget_project = widget_xview_project.UIXviewProject(parent=self)
         self.layout_project.addWidget(self.widget_project)
+
+        self.widget_xfit = widget_xview_xfit.UIXFIT(parent=self)
+        self.layout_xfit.addWidget(self.widget_xfit)
 
     def set_figure(self, axis, canvas, label_x='', label_y=''):
         axis.legend(fontsize='small')
