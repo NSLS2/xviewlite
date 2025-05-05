@@ -1248,11 +1248,17 @@
    <widget class="QComboBox" name="comboBox_window">
     <property name="geometry">
      <rect>
-      <x>349</x>
-      <y>423</y>
+      <x>350</x>
+      <y>430</y>
       <width>186</width>
-      <height>31</height>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>20</height>
+     </size>
     </property>
     <property name="currentText">
      <string>Hanning</string>
