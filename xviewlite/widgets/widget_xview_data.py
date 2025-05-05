@@ -20,22 +20,22 @@ from elements.figure_update import update_figure
 from dialogs.BasicDialogs import message_box
 from xas.file_io import load_binned_df_from_file, load_binned_df_and_extended_data_from_file
 import copy
-from xviewlite.dialogs.FileMetadataDialog import FileMetadataDialog
+
 
 from importlib import resources
 
 if sys.platform == 'darwin':
-    with resources.path('xviewlite.ui', 'ui_xview_data-mac.ui') as path:
+    with resources.path('xviewlite.ui', 'ui_xview_data.ui') as path:
         ui_path = str(path)
 else:
     with resources.path('xviewlite.ui', 'ui_xview_data.ui') as path:
         ui_path = str(path)
 class UIXviewData(*uic.loadUiType(ui_path)):
-    def __init__(self, db=None, parent=None, *args, **kwargs):
+    def __init__(self, parent=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setupUi(self)
 
-        self.db = db
+
         self.parent = parent
         self.push_select_folder.clicked.connect(self.select_working_folder)
         self.push_refresh_folder.clicked.connect(self.get_file_list)
@@ -76,7 +76,6 @@ class UIXviewData(*uic.loadUiType(ui_path)):
         menu = QMenu()
         plot_action = menu.addAction("&Plot")
         add_to_project_action = menu.addAction("&Add to project")
-        show_metadata_action = menu.addAction("&Show file metadata")
         # merge_action = menu.addAction("&Add to project")
         parentPosition = self.list_data.mapToGlobal(QtCore.QPoint(0, 0))
         menu.move(parentPosition+QPos)
@@ -85,16 +84,7 @@ class UIXviewData(*uic.loadUiType(ui_path)):
             self.plot_xas_data()
         elif action == add_to_project_action:
             self.add_data_to_project()
-        elif action == show_metadata_action:
-            self.show_file_metadata()
 
-    def show_file_metadata(self):
-        selected_items = (self.list_data.selectedItems())
-        for i in selected_items:
-            path = f'{self.working_folder}/{i.text()}'
-            _, header = load_binned_df_from_file(path)
-            self.file_md_widget = FileMetadataDialog(path, header, parent=self)
-            self.file_md_widget.show()
 
     def addCanvas(self):
         self.figure_data = Figure()
@@ -123,6 +113,7 @@ class UIXviewData(*uic.loadUiType(ui_path)):
         self.get_file_list()
 
     def get_file_list(self):
+
         if self.working_folder:
             self.list_data.clear()
 
@@ -132,9 +123,10 @@ class UIXviewData(*uic.loadUiType(ui_path)):
                 self.file_list.sort()
             elif self.comboBox_sort_files_by.currentText() == 'Time':
                 self.file_list.sort(key=lambda x: os.path.getmtime('{}/{}'.format(self.working_folder, x)))
-
                 self.file_list.reverse()
+            self.list_data.blockSignals(True)
             self.list_data.addItems(self.file_list)
+            self.list_data.blockSignals(False)
 
     def select_files_to_plot(self):
         df, header = load_binned_df_from_file(f'{self.working_folder}/{self.list_data.currentItem().text()}')
@@ -176,17 +168,9 @@ class UIXviewData(*uic.loadUiType(ui_path)):
             message_box('Warning','Please select numerator and denominator')
             return
 
-
-            # energy_key = key
-
-
-        handles = []
-
         for i in selected_items:
             path = f'{self.working_folder}/{i.text()}'
-            print(path)
             df, header = load_binned_df_from_file(path)
-
             energy_key = self.get_energy_key(df)
 
             denominator_name = self.listWidget_data_denominator.selectedItems()[0].text()
@@ -234,88 +218,6 @@ class UIXviewData(*uic.loadUiType(ui_path)):
         self.figure_data.tight_layout()
         self.canvas.draw_idle()
 
-    # def merge_files_and_save(self):
-    #     selected_items = self.list_data.selectedItems()
-    #     if selected_items != []:
-    #         mu_t = []
-    #         mu_f = []
-    #         mu_r = []
-    #         file_str = ''
-    #
-    #         energy = None
-    #
-    #         for item in selected_items:
-    #             filepath = str(Path(self.working_folder) / Path(item.text()))
-    #             name = Path(filepath).resolve().stem
-    #             df, header = load_binned_df_from_file(filepath)
-    #
-    #
-    #
-    #
-    #
-    #             ds_list.append(self.parent.project._datasets[])
-    #
-    #         ds_list.sort(key=lambda x: x.name)
-    #         mu = ds_list[0].mu
-    #         mu_array = np.zeros([len(selection) + 1, len(mu)])
-    #         energy_master = ds_list[0].energy
-    #
-    #         mu_array[0, :] = energy_master
-    #         ret = self.message_box_save_datasets_as()
-    #         for indx, obj in enumerate(selection):
-    #             ds = ds_list[indx]
-    #             energy = ds.energy
-    #             if ret == 0:
-    #                 yy = np.array(ds.mu)
-    #                 keys = '# energy(eV), mu(E)\n'
-    #             elif ret == 1:
-    #                 yy = ds.norm
-    #                 keys = '# energy(eV), normalized mu(E)\n'
-    #             elif ret == 2:
-    #                 yy = ds.flat
-    #                 keys = '# energy(eV), flattened normalized mu(E)\n'
-    #
-    #             yy = np.interp(energy_master, energy, yy)
-    #             mu_array[indx + 1, :] = yy
-    #             md.append(ds.name)
-    #
-    #         self.mu_array = mu_array
-    #         options = QtWidgets.QFileDialog.DontUseNativeDialog
-    #         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save XAS project',
-    #                                                             self.parent.widget_data.working_folder,
-    #                                                             'XAS dataset (*.dat)', options=options)
-    #         if filename:
-    #             if Path(filename).suffix != '.xas':
-    #                 filename = filename + '.xas'
-    #             print(filename)
-    #             filelist = "{}".format("\n".join(md[0:]))
-    #             separator = '\n #______________________________________________________\n'
-    #
-    #             header = '{} {} {}'.format(filelist, separator, keys)
-    #             fid = open(filename, 'w')
-    #             np.savetxt(fid, np.transpose(mu_array), header=header)
-    #             fid.close()
-
-
-    # def merge_xas_data(self):
-    #     selected_items = (self.list_data.selectedItems())
-    #     energy_key = 'energy'
-    #     i0_key, it_key, ir_key, if_key = 'i0', 'it', 'ir', 'iff'
-    #
-    #
-    #
-    #     mus_array = []
-    #     for i, item in enumerate(selected_items):
-    #
-    #         path = f'{self.working_folder}/{item.text()}'
-    #         print('merging', path)
-    #         df, header = load_binned_df_from_file(path)
-    #         if i == 0:
-    #             enregy_master = df[energy_key]
-    #             mus_array_all =
-
-
-
 
     def add_data_to_project(self):
         if not(self.listWidget_data_denominator.selectedItems() and self.listWidget_data_numerator.selectedItems()):
@@ -334,22 +236,6 @@ class UIXviewData(*uic.loadUiType(ui_path)):
             else:
                 df, header = load_binned_df_from_file(filepath)
                 ext_data = None
-
-            md = {}
-            try:
-                uid_idx1 = header.find('Scan.uid:') + 10
-                uid_idx2 = header.find('\n', header.find('Scan.uid:'))
-                uid = header[uid_idx1: uid_idx2]
-                md = self.db[uid]['start']
-            except KeyError:
-                try:
-                    uid = header[header.find('UID:') + 5:header.find('\n', header.find('UID:'))]
-                    md = self.db[uid]['start']
-                except:
-                    pass
-
-            if md == {}:
-                print('Metadata not found')
 
             # df = df.sort_values('energy')
             denominator_name = self.listWidget_data_denominator.selectedItems()[0].text()
@@ -401,20 +287,15 @@ class UIXviewData(*uic.loadUiType(ui_path)):
                     df_norm = pd.DataFrame(df_norm)
                 except:
                     df_norm = None
-                # attempt to add dictionary
-                #md['mu_channel']= mu_channel
-                #print(f'Channel {mu_channel}')
                 if ds_first is None:
-                    ds = XASDataSet(name=(f'{name} {mu_channel}'), md=md, energy=energy, mu=spectrum, filename=filepath,
+                    ds = XASDataSet(name=(f'{name} {mu_channel}'),  energy=energy, mu=spectrum, filename=filepath,
                                 datatype='experiment', ext_data=ext_data, df=df_norm)
                     ds_first = ds
-                # print('make first dataset')
                 else:
-                    ds = XASDataSet(name=(f'{name} {mu_channel}'), md=md, energy=energy, mu=spectrum, filename=filepath,
+                    ds = XASDataSet(name=(f'{name} {mu_channel}'), energy=energy, mu=spectrum, filename=filepath,
                                 datatype='experiment', process=False, xasdataset=ds_first, ext_data=ext_data, df=df_norm)
-                # print('copying parameters from the first dataset')
 
-            # print('dataset energy id', ds.energy)
+                self.parent.widget_project._normalize_ds_in_full(ds)
                 ds.header = header
                 self.parent.project.append(ds)
                 self.parent.statusBar().showMessage('Scans added to the project successfully')

@@ -99,15 +99,6 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
             self.pushButton_truncate_below.clicked.connect(self.truncate)
             self.pushButton_truncate_above.clicked.connect(self.truncate)
 
-            # Menu defs
-            # self.action_exit.triggered.connect(self.close_app)
-            # self.action_save_project.triggered.connect(self.save_xas_project)
-            # self.action_open_project.triggered.connect(self.open_xas_project)
-            # self.action_save_datasets_as_text.triggered.connect(self.save_xas_datasets_as_text)
-            # self.action_combine_and_save_as_text.triggered.connect(self.combine_and_save_datasets_as_text)
-            # self.action_merge.triggered.connect(self.merge_datasets)
-            # self.action_rename.triggered.connect(self.rename_dataset)
-            # self.action_remove.triggered.connect(self.remove_from_xas_project)
 
             self.lineEdit_to_ds_parameter_dict = {
                 'lineEdit_preedge_lo':     'pre1',
@@ -155,9 +146,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
             save_datasets_as_text_action = menu.addAction("&Save datasets as text")
             combine_and_save_datasets_as_text_action = menu.addAction("&Combine and save datasets as text")
             save_dataset_to_dropbox = menu.addAction("&Save to Dropbox")
-            # save_dataset_to_database_action = menu.addAction("&Save to processed database")
             export_dataset_to_mcr_project = menu.addAction("&Add as dataset as MCR project")
-            export_ref_to_mcr_project = menu.addAction("&Add as reference to MCR project")
             parentPosition = self.list_project.mapToGlobal(QtCore.QPoint(0, 0))
             menu.move(parentPosition + QPos)
             action = menu.exec_()
@@ -180,14 +169,11 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
 
             elif action == export_dataset_to_mcr_project:
                 self.export_dataset_to_mcr_project()
-            elif action == export_ref_to_mcr_project:
-                self.export_ref_to_mcr_project()
 
         def xas_project_double_clicked(self):
             selection = self.list_project.selectedIndexes()
             if selection != []:
                 self.rename_dataset()
-
 
         def addCanvas(self):
             # XASProject Plot:
@@ -226,6 +212,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
             self.ft_param_list = [
                 'kmin_ft', 'kmax_ft'
             ]
+
             selection = self.list_project.selectedIndexes()
             if selection != []:
                 sender = QObject()
@@ -333,14 +320,12 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                             float(sender_object.text()))
                 except:
                     print('what''s going wrong')
-
             self._disconnect_cid()
 
         def update_project_list(self, datasets):
             self.list_project.clear()
             for ds in datasets:
                 self.list_project.addItem(ds.name)
-
 
         def show_ds_params(self):
             if self.list_project.selectedIndexes():
@@ -358,23 +343,16 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                 self.lineEdit_clamp_hi.setText('{:.1f}'.format(ds.clamp_hi))
                 self.lineEdit_k_ft_lo.setText('{:.1f}'.format(ds.kmin_ft))
                 self.lineEdit_k_ft_hi.setText('{:.1f}'.format(ds.kmax_ft))
-
                 # Make the first selected line bold, and reset bold font for other selections
                 font = QtGui.QFont()
                 font.setBold(False)
-
                 for i in range(self.list_project.count()):
                     self.list_project.item(i).setFont(font)
                 font.setBold(True)
                 self.list_project.item(index.row()).setFont(font)
-
             if self.list_project.selectedIndexes():
 
                 indices = self.list_project.selectedIndexes()
-                for index in indices:
-                    self.parent.widget_statistics.list_project.item(index.row()).setSelected(True)
-
-
         def remove_from_xas_project(self):
             for index in self.list_project.selectedIndexes()[
                          ::-1]:  # [::-1] to remove using indexes from last to first
@@ -393,14 +371,13 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
         def plot_project_in_E(self):
             if self.list_project.selectedIndexes():
                 update_figure([self.figure_project.ax], self.toolbar_project, self.canvas_project)
-
                 for index in self.list_project.selectedIndexes():
                     ds = self.parent.project[index.row()]
                     self._normalize_ds_in_full(ds)
                     # ds.normalize_force()
-                    # ds.extract_chi_force()
+                    ds.extract_chi_force()
                     # ds.extract_ft_force()
-                    # ds.extract_ft()
+                    ds.extract_ft()
                     # ds.extract_ft_force()
                     energy = ds.energy
                     if self.radioButton_mu_xasproject.isChecked():
@@ -415,7 +392,6 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                             ds.deriv()
                         data = ds.mu_deriv
                         energy = ds.energy_deriv
-
 
                     self.figure_project.ax.plot(energy, data, label=ds.name)
 
@@ -519,8 +495,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                 pathname = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose folder...',
                                                                   self.parent.widget_data.working_folder,
                                                                   options=options)
-                # else:
-                #     pathname = f'{expanduser("~")}/tmp'
+
                 separator = '#______________________________________________________\n'
                 if pathname is not '':
                     for indx, obj in enumerate(selection):
@@ -552,39 +527,6 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                         np.savetxt(fid, table)
                         fid.close()
 
-                        # if hasattr(ds, 'ext_data') and (ds.ext_data is not None):
-                        #     if 'pil100k_image' in ds.ext_data.keys():
-                        #         tiff_files = dump_tiff_images(filename_new, None, ds.ext_data, df_red=ds.df.fillna(0), zip=True)
-                        #         if send_to_dropbox:
-                        #             if tiff_files is not None:
-                        #                 for tiff_file in tiff_files:
-                        #                     self.cloud_dispatcher.load_to_dropbox(tiff_file,
-                        #                                                           year=ds.md['year'],
-                        #                                                           cycle=ds.md['cycle'],
-                        #                                                           proposal=ds.md['proposal'])
-                        #
-                        # if send_to_dropbox:
-                        #     self.cloud_dispatcher.load_to_dropbox(filename_new,
-                        #                                           year = ds.md['year'],
-                        #                                           cycle = ds.md['cycle'],
-                        #                                           proposal = ds.md['proposal'])
-
-
-        def _intersect_metadata_dicts(self, md_list):
-
-            keys1 = [k for k in md_list[0].keys()]
-            values1 = [md_list[0][k] for k in keys1]
-            keys_intersected = []
-            for k in keys1:
-                this_key_cond = True
-                for each_md in md_list:
-                    if each_md[k] not in values1:
-                        this_key_cond = False
-                if this_key_cond:
-                    keys_intersected.append(k)
-            md_common = {k : md_list[0][k] for k in md_list[0].keys() if k in keys_intersected}
-            return md_common
-
 
         def merge_datasets(self):
             selection = self.list_project.selectedIndexes()
@@ -596,8 +538,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                     _ds = self.parent.project._datasets[selection[indx].row()]
                     energy_min.append(_ds.energy[0])
                     energy_max.append(_ds.energy[-1])
-                #print(energy_min)
-                #print(energy_max)
+
                 energy_min_median = np.median(energy_min)
                 energy_max_median = np.median(energy_max)
 
@@ -614,7 +555,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
 
                 merged_files_string = ['# merged files\n']
 
-                merged_md_list = []
+
                 name_list = []
                 for indx, obj in enumerate(selection):
                     _ds = self.parent.project._datasets[selection[indx].row()]
@@ -629,19 +570,14 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                     # _df['muf'][indx, :] = _ds.df['muf']
                     # _df['mur'][indx, :] = _ds.df['mur']
 
-                    merged_md_list.append(_ds.md)
+
                     merged_files_string.append('# ' + _ds.filename + '\n')
                     name_list.append(_ds.name)
                     if hasattr(_ds, 'ext_data'):
                         ext_data_list.append(_ds.ext_data)
-                    # this_uid = _ds.md['uid']
-                    #     # self.parent.project._datasets[selection[indx].row()].md['uid']
-                    # # merged_uids_string.append('# ' + this_uid + '\n')
-                    # merged_uids_string_for_md.append(this_uid)
+
 
                 merged_name = os.path.commonprefix(name_list) + ' merged'
-                # mask = np.all(mu_array !=0, axis=1)
-                # mu_array = mu_array[mask]
                 np.savetxt('/nsls2/data3/iss/legacy/Sandbox/data.dat', mu_array)
                 self.merge_mu=mu_array
 
@@ -652,11 +588,6 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                 print(zscores)
                 self.merge_energy =  energy_master
                 mu_merged = np.average(mu_array, axis=0)
-
-                # df = pd.DataFrame({'energy' : energy_master,
-                #                    'mut' : np.average(_df['mut'], axis=0),
-                #                    'muf' : np.average(_df['muf'], axis=0),
-                #                    'mur' : np.average(_df['mur'], axis=0)})
 
                 if len(ext_data_list) > 0:
                     ext_data_merged = copy.deepcopy(ext_data_list[0])
@@ -679,14 +610,10 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                 else:
                     ext_data_merged = None
 
-                merged = XASDataSet(name=merged_name, md=merged_files_string, energy=energy_master, mu=mu_merged, filename='',
+                merged = XASDataSet(name=merged_name, energy=energy_master, mu=mu_merged, filename='',
                                                datatype='processed', ext_data=ext_data_merged)#, df=df)
-                merged.header = "".join(merged.md)
 
-                merged.md = self._intersect_metadata_dicts(merged_md_list)
-                merged.md['merged files'] = "".join(merged_files_string)
-                # merged.md['merged uids'] = "".join(merged_uids_string)
-                #merged.md['uid'] = str(merged_uids_string_for_md)
+
                 self.parent.project.append(merged)
                 self.parent.project.project_changed()
 
@@ -747,85 +674,6 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                 if ok:
                     self.parent.project._datasets[selection[0].row()].name = new_name
                     self.parent.project.project_changed()
-
-        # def save_datasets_to_database(self):
-        #     selection = self.list_project.selectedIndexes()
-        #     if selection != []:
-        #
-        #         for indx, _ in enumerate(selection):
-        #             ds = self.parent.project._datasets[selection[indx].row()]
-        #             sample_name = ds.name
-        #             compound = ds.name
-        #             try:
-        #                 element = ds.md['element']
-        #                 edge = ds.md['edge']
-        #                 uid = ds.md['uid']
-        #             except:
-        #                 element = ''
-        #                 edge = ''
-        #                 uid = ''
-        #
-        #             e0 = ds.e0
-        #             reference = 0
-        #             self._dlg = MetadataDialog(sample_name, compound, element, edge, e0, reference, uid, parent=self)
-        #             if self._dlg.exec_():
-        #                 sample_name, compound, element, edge, e0, reference, uid = self._dlg.getValues()
-        #                 metadata = {'Sample_name': sample_name,
-        #                             'compound': compound,
-        #                             'Element' : element,
-        #                             'Edge' : edge,
-        #                             'E0': e0,
-        #                             'Reference' : reference,
-        #                             'ISS_DB_uid' : uid}
-        #                 try:
-        #                     mu_norm = ds.flat.values
-        #                 except AttributeError:
-        #                     mu_norm = ds.flat
-        #                 energy = ds.energy
-        #                 data = {'Energy': energy, 'mu_norm': mu_norm}
-        #                 save_spectrum_to_db(metadata, data)
-
-
-        def export_dataset_to_mcr_project(self):
-            selection = self.list_project.selectedIndexes()
-            if selection != []:
-                index = [i.row() for i in selection]
-
-                name, ok = QtWidgets.QInputDialog.getText(self, 'Dataset name', 'Enter name:',
-                                                              QtWidgets.QLineEdit.Normal, 'New Dataset')
-                # TODO: add metadata to the output
-                # TODO: turn t into time
-                if ok:
-                    energy, t_dict, data = self.parent.project.convert_into_2d_dataset(np.sort(index))
-
-                    self.parent.widget_mcr._create_dataset(energy, t_dict, data, name=name)
-
-        def export_ref_to_mcr_project(self):
-            selection = self.list_project.selectedIndexes()
-            if selection != []:
-                x_list, data_list, label_list = [], [], []
-                for i in selection:
-                    ds = self.parent.project[i.row()]
-                    x_list.append(ds.energy)
-                    data_list.append(ds.flat)
-                    label_list.append(ds.name)
-
-                self.parent.widget_mcr.add_references_to_specific_set(x_list, data_list, label_list)
-
-                # name, ok = QtWidgets.QInputDialog.getText(self, 'Dataset name', 'Enter name:',
-                #                                           QtWidgets.QLineEdit.Normal, 'New Dataset')
-                # # TODO: add metadata to the output
-                # # TODO: turn t into time
-                # if ok:
-                #     energy, t_dict, data = self.parent.project.convert_into_2d_dataset(np.sort(index))
-                #
-                #     self.parent.widget_mcr._create_dataset(energy, t_dict, data, name=name)
-
-
-
-
-
-
 
         def truncate(self):
             sender = QObject()
