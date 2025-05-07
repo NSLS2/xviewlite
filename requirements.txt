@@ -1,1 +1,5 @@
 # List required packages in this file, one per line.
+python=3.10
+PyQt5
+"xraylarch[larix]"
+pyqtgraph

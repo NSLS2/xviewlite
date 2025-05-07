@@ -578,7 +578,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
 
 
                 merged_name = os.path.commonprefix(name_list) + ' merged'
-                np.savetxt('/nsls2/data3/iss/legacy/Sandbox/data.dat', mu_array)
+                # np.savetxt('/nsls2/data3/iss/legacy/Sandbox/data.dat', mu_array)
                 self.merge_mu=mu_array
 
                 #evaluate zscore

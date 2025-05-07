@@ -46,7 +46,7 @@
     </property>
     <widget class="QWidget" name="tab_data">
      <attribute name="title">
-      <string>Browse data</string>
+      <string>XAS data</string>
      </attribute>
      <widget class="QWidget" name="verticalLayoutWidget">
       <property name="geometry">
@@ -62,7 +62,7 @@
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Databroker</string>
+      <string>XAS Project</string>
      </attribute>
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
@@ -73,12 +73,12 @@
         <height>816</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="layout_databroker"/>
+      <layout class="QVBoxLayout" name="layout_project"/>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_project">
      <attribute name="title">
-      <string>Project</string>
+      <string>XFit</string>
      </attribute>
      <widget class="QWidget" name="verticalLayoutWidget_2">
       <property name="geometry">
@@ -89,7 +89,7 @@
         <height>816</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="layout_project"/>
+      <layout class="QVBoxLayout" name="layout_xfit"/>
      </widget>
     </widget>
    </widget>
@@ -101,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>1612</width>
-     <height>22</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
