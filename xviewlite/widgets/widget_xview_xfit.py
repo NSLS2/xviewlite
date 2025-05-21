@@ -33,7 +33,8 @@ import copy
 from xviewlite.dialogs.FileMetadataDialog import FileMetadataDialog
 from xviewlite.xfit_classes.workers import Worker_Retrive_MatProj_Data as worker_matproj
 from xviewlite.xfit_classes.workers import Worker_Run_Feff_Calculation as worker_feff
-from xviewlite.xfit_classes.utils import read_lineEdit_and_perform_sanity_check, get_default_feff_parameters
+from xviewlite.xfit_classes.utils import read_lineEdit_and_perform_sanity_check, get_default_feff_parameters, Shell
+from scipy.interpolate import interp1d
 
 if platform == 'darwin':
     ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xfit.ui')
@@ -69,6 +70,8 @@ class UIXFIT(*uic.loadUiType(ui_path)):
 
         for key in ['_sim']:
             getattr(self, 'comboBox_window' + key).addItems(windows)
+
+        self.pushButton_add_shells_to_fit.clicked.connect(self.add_selected_paths_tofit)
 
     #################################################################################################
     ## This section of code make search from the materials project database and populates the entires
@@ -309,3 +312,62 @@ class UIXFIT(*uic.loadUiType(ui_path)):
         self.canvas_sim_chi.draw()
         self.canvas_sim_ft.axes.legend()
         self.canvas_sim_ft.draw()
+
+
+##################Add selected shells to the fit###################################
+
+    def clear_shell_widgets(self):
+        if self.horizontalLayout_param.count() > 1:
+            index = self.horizontalLayout_param.count() - 2
+            while (index >= 0):
+                widget = self.horizontalLayout_param.itemAt(index).widget()
+                widget.setParent(None)
+                index -= 1
+
+    def populate_shells_with_fit_params(self, parameters=None):
+
+        _parameters = parameters
+
+        _variables = ['r', 'n', 'ss', 'c3', 'c4', 'e', 's02']
+
+        for i, key in enumerate(self.shells.keys()):
+            for _var in _variables:
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + _var + '_value').setValue(
+                    _parameters.valuesdict()[f'{_var}_{i:d}'])
+
+        self.pushButton_fit.setEnabled(True)
+
+
+    def read_feff_and_interpolate(self, shell_keys):
+        new_k = np.arange(0, 20.01, 0.05)
+        keys_data = ['mag_feff', 'pha_feff', 'real_phc', 'lam']
+
+        _buffer = {}
+        _buffer['k'] = new_k
+        for shell_key in shell_keys:
+            for key_data in keys_data:
+                x = getattr(self.shells[shell_key]['parameter']._feffdat, 'k')
+                y = getattr(self.shells[shell_key]['parameter']._feffdat, key_data)
+                function = interp1d(x, y, kind='cubic')
+                _buffer[key_data] = function(new_k)
+            self.shells[shell_key]['feff_data'] = pd.DataFrame(_buffer)
+
+
+    def add_selected_paths_tofit(self):
+
+        self.clear_shell_widgets()
+        self.shells = {}
+        count = 0
+        for key in self.treeWidget_paths_dict['selected_feff_data'].keys():
+            for i, k in enumerate(self.treeWidget_paths_dict['selected_feff_data'][key].keys()):
+                self.shells['Shell_' + str(count + 1)] = {}
+                self.shells['Shell_' + str(count + 1)]['widget'] = Shell()
+                self.horizontalLayout_param.insertWidget(i, self.shells['Shell_' + str(count + 1)]['widget'])
+                self.shells['Shell_' + str(count + 1)]['widget'].groupBox.setTitle(f'Shell {count + 1} {key} {k} ')
+                self.shells['Shell_' + str(count + 1)]['parameter'] = \
+                self.treeWidget_paths_dict['selected_feff_data'][key][k][0]
+                count += 1
+
+        self.spinBox_shells.setValue(count)
+        self.populate_shells_with_default_params(self.shells.keys())
+        self.read_feff_and_interpolate(self.shells.keys())

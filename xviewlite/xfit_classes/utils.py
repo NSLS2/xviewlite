@@ -2,7 +2,7 @@
 from xraydb import atomic_symbol
 from PyQt5 import uic
 import os
-
+import pkg_resources
 
 periodic_table = {'element' : [atomic_symbol(i) for i in range(20, 93)]}
 
@@ -39,3 +39,13 @@ def get_default_feff_parameters(title=None):
              "S02": "1.0",
              "TITLE": title}
     return cards
+
+
+# PATH = os.sys.path[-1] + '/ui/'
+
+PATH = pkg_resources.resource_filename('xviewlite', 'ui/ui_shell.ui')
+
+class Shell(*uic.loadUiType(PATH)):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
