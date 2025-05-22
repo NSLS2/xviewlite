@@ -18,11 +18,13 @@ from xraydb import atomic_symbol
 from larch.xafs.feffutils import get_feff_pathinfo
 from xviewlite.xfit_classes.lightshow_pymatgen_bug_fix import FEFFDictSet_modified
 from xviewlite.xfit_classes.plotting_tools import MplCanvas, create_pyqtgraph_widget
+from xviewlite.xfit_classes.pyqtgraph_widget import create_pyqtgraph_widget
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from larch.xafs import xftf
 from larch.xafs.feffdat import ff2chi, feffpath
 from larch.symboltable import Group
 from pathlib import Path
+from pyqtgraph import mkPen
 
 from matplotlib.figure import Figure
 # from xas.xasproject import XASDataSet
@@ -68,10 +70,16 @@ class UIXFIT(*uic.loadUiType(ui_path)):
 
         windows = ['sine', 'hanning', 'parzen', 'welch', 'gaussian', 'kaiser']
 
-        for key in ['_sim']:
+        for key in ['', '_sim']:
             getattr(self, 'comboBox_window' + key).addItems(windows)
 
         self.pushButton_add_shells_to_fit.clicked.connect(self.add_selected_paths_tofit)
+        self.shells = {}
+
+        self.create_plot_item_for_fit_chi()
+        self.create_plot_item_for_fit_ft()
+        self.chi_data = None
+        self.pushButton_make_ft.clicked.connect(self.plot_raw_chi_ft)
 
     #################################################################################################
     ## This section of code make search from the materials project database and populates the entires
@@ -371,3 +379,119 @@ class UIXFIT(*uic.loadUiType(ui_path)):
         self.spinBox_shells.setValue(count)
         self.populate_shells_with_default_params(self.shells.keys())
         self.read_feff_and_interpolate(self.shells.keys())
+
+    def populate_shells_with_default_params(self, keys):
+
+        for i, key in enumerate(keys):
+            if i == 0:
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_value').setValue(
+                    self.shells[key]['parameter'].reff)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_max').setValue(
+                    self.shells[key]['parameter'].reff * 1.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_min').setValue(
+                    self.shells[key]['parameter'].reff * 0.95)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_value').setValue(
+                    self.shells[key]['parameter'].degen)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_max').setValue(
+                    self.shells[key]['parameter'].degen * 1.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_min').setValue(
+                    self.shells[key]['parameter'].degen * 0.95)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_value').setValue(0.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_max').setValue(0.2)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_min').setValue(0.01)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_max').setValue(0.02)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_min').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_max').setValue(0.02)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_min').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_max').setValue(20)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_min').setValue(-20)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_value').setValue(0.8)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_max').setValue(1.0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_min').setValue(0.7)
+            else:
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_value').setValue(
+                    self.shells[key]['parameter'].reff)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_max').setValue(
+                    self.shells[key]['parameter'].reff * 1.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'r_min').setValue(
+                    self.shells[key]['parameter'].reff * 0.95)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_value').setValue(
+                    self.shells[key]['parameter'].degen)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_max').setValue(
+                    self.shells[key]['parameter'].degen * 1.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'n_min').setValue(
+                    self.shells[key]['parameter'].degen * 0.95)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_value').setValue(0.05)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_max').setValue(0.2)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'ss_min').setValue(0.01)
+                getattr(self.shells[key]['widget'], 'lineEdit_' + 'ss').setText(f'ss_{i - 1:d}')
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_max').setValue(0.02)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c3_min').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_max').setValue(0.02)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'c4_min').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_value').setValue(0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_max').setValue(20)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 'e_min').setValue(-20)
+                getattr(self.shells[key]['widget'], 'lineEdit_' + 'e').setText(f'e_0')
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_value').setValue(0.8)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_max').setValue(1.0)
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + 's02_min').setValue(0.7)
+                getattr(self.shells[key]['widget'], 'lineEdit_' + 's02').setText(f's02_0')
+
+    def clear_shell_widgets(self):
+        if self.horizontalLayout_param.count() > 1:
+            index = self.horizontalLayout_param.count() - 2
+            while (index >= 0):
+                widget = self.horizontalLayout_param.itemAt(index).widget()
+                widget.setParent(None)
+                index -= 1
+
+
+
+    def create_plot_item_for_fit_chi(self):
+        plt_item, _ref = create_pyqtgraph_widget(layout=self.verticalLayout_chi,
+                                                 title="EXAFS Chi",
+                                                 number_of_references=2)
+
+        self.raw_chi_ref = _ref[1]
+        self.fit_chi_ref = _ref[2]
+
+    def create_plot_item_for_fit_ft(self):
+
+        plt_item, _ref = create_pyqtgraph_widget(layout=self.verticalLayout_ft,
+                                                 title="Fourier Transform",
+                                                 number_of_references=4)
+
+        self.raw_ft_mag_ref = _ref[1]
+        self.raw_ft_img_ref = _ref[2]
+        self.fit_ft_mag_ref = _ref[3]
+        self.fit_ft_img_ref = _ref[4]
+
+
+    def plot_raw_chi_ft(self):
+
+        __kweight = self.spinBox_kweight.value()
+        __window = self.comboBox_window.currentText()
+        __kmin = self.doubleSpinBox_kmin.value()
+        __kmax = self.doubleSpinBox_kmax.value()
+
+        __chi = self.chi_data.chi * self.chi_data.k ** __kweight
+        self.chi_data.for_fit = __chi
+        __group = Group()
+        xftf(self.chi_data.k, self.chi_data.chi, kweight=__kweight, kmin=__kmin, kmax=__kmax, window=__window,
+             group=__group)
+
+        pen = mkPen(color='b', width=2, style=Qt.PenStyle.SolidLine)
+
+        self.raw_chi_ref.setData(self.chi_data.k, __chi, pen=pen, clear=True)
+        self.raw_ft_mag_ref.setData(__group.r, __group.chir_mag, pen=pen, clear=True)
+        self.raw_ft_img_ref.setData(__group.r, __group.chir_im, pen=pen, clear=True)
+
+        self.fit_chi_ref.clear()
+        self.fit_ft_mag_ref.clear()
+        self.fit_ft_img_ref.clear()

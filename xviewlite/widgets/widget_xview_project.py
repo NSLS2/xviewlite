@@ -147,6 +147,7 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
             combine_and_save_datasets_as_text_action = menu.addAction("&Combine and save datasets as text")
             save_dataset_to_dropbox = menu.addAction("&Save to Dropbox")
             export_dataset_to_mcr_project = menu.addAction("&Add as dataset as MCR project")
+            export_dataset_to_xfit = menu.addAction("&Add as dataset as XFIT")
             parentPosition = self.list_project.mapToGlobal(QtCore.QPoint(0, 0))
             menu.move(parentPosition + QPos)
             action = menu.exec_()
@@ -169,6 +170,9 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
 
             elif action == export_dataset_to_mcr_project:
                 self.export_dataset_to_mcr_project()
+
+            elif action == export_dataset_to_xfit:
+                self.export_dataset_to_xfit()
 
         def xas_project_double_clicked(self):
             selection = self.list_project.selectedIndexes()
@@ -793,6 +797,14 @@ class UIXviewProject(*uic.loadUiType(ui_path)):
                         plt.figure(1, clear=True)
                         plt.subplot(221)
                         plt.contourf(ext_data['pil100k_roi1_vh']['pixel'], ds.energy, ext_data['pil100k_roi1_vh']['intensity'], 51)
+
+
+
+        def export_dataset_to_xfit(self):
+            index = self.list_project.selectedIndexes()[0]
+            ds = self.parent.project._datasets[index.row()]
+            self.parent.widget_xfit.chi_data = ds.larch
+            self.parent.widget_xfit.plot_raw_chi_ft()
 
 
 
