@@ -2,7 +2,7 @@ from pymatgen.ext.matproj import MPRester
 from PyQt5.QtCore import QObject, pyqtSignal
 from larch.xafs import feffrunner
 from lmfit import minimize
-
+import numpy as np
 API_KEY = 'MqQSJqQj6Z923DT9I9eZCgvbEM9rbCxT' #iss user AIP gmail
 
 class Worker_Retrive_MatProj_Data(QObject):

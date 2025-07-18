@@ -491,6 +491,19 @@
       </item>
      </layout>
     </widget>
+    <widget class="QPushButton" name="pushButton_fit">
+     <property name="geometry">
+      <rect>
+       <x>1410</x>
+       <y>333</y>
+       <width>140</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Perform FIT</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

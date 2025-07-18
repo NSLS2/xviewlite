@@ -2,6 +2,7 @@ import os
 import matplotlib.patches as mpatches
 import numpy as np
 import pandas as pd
+from lmfit import Parameters
 import pkg_resources
 
 from PyQt5 import  QtWidgets, QtCore, uic
@@ -35,6 +36,7 @@ import copy
 from xviewlite.dialogs.FileMetadataDialog import FileMetadataDialog
 from xviewlite.xfit_classes.workers import Worker_Retrive_MatProj_Data as worker_matproj
 from xviewlite.xfit_classes.workers import Worker_Run_Feff_Calculation as worker_feff
+from xviewlite.xfit_classes.workers import WorkerEXAFSFit as worker_fit
 from xviewlite.xfit_classes.utils import read_lineEdit_and_perform_sanity_check, get_default_feff_parameters, Shell
 from scipy.interpolate import interp1d
 
@@ -80,6 +82,7 @@ class UIXFIT(*uic.loadUiType(ui_path)):
         self.create_plot_item_for_fit_ft()
         self.chi_data = None
         self.pushButton_make_ft.clicked.connect(self.plot_raw_chi_ft)
+        self.pushButton_fit.clicked.connect(self.perform_exafs_fit)
 
     #################################################################################################
     ## This section of code make search from the materials project database and populates the entires
@@ -495,3 +498,131 @@ class UIXFIT(*uic.loadUiType(ui_path)):
         self.fit_chi_ref.clear()
         self.fit_ft_mag_ref.clear()
         self.fit_ft_img_ref.clear()
+
+
+
+    def perform_exafs_fit(self):
+        self.pushButton_fit.setEnabled(False)
+        self.params = Parameters()
+        self.params.clear()
+
+        # self.shells_feff_data = {}
+
+        for i, key in enumerate(self.shells.keys()):
+
+            for par in ['r', 'n', 'ss', 'c3', 'c4', 'e', 's02']:
+                _value = getattr(self.shells[key]['widget'], 'doubleSpinBox_' + par + '_value').value()
+                _min = getattr(self.shells[key]['widget'], 'doubleSpinBox_' + par + '_min').value()
+                _max = getattr(self.shells[key]['widget'], 'doubleSpinBox_' + par + '_max').value()
+                _vary = getattr(self.shells[key]['widget'], 'checkBox_' + par).isChecked()
+                _expr = getattr(self.shells[key]['widget'], 'lineEdit_' + par).text()
+
+                if i == 0 or _expr == "":
+                    _expr = None
+
+                self.params.add(f'{par}_{i:d}', value=_value, min=_min, max=_max, vary=_vary, expr=_expr)
+
+        kmin = self.doubleSpinBox_kmin.value()
+        kmax = self.doubleSpinBox_kmax.value()
+
+        self.kweight = self.spinBox_kweight.value()
+
+        # for key in self.shells.keys():
+        #     self.shells_feff_data[key] = self.feff_data[key]
+
+        self.fit_range = [kmin, kmax]
+
+        self.fitting_in_progress = True
+
+        self.shells_feff_data = [self.shells[key]['feff_data'] for key in self.shells.keys()]
+
+        self.thread_fit = QThread()
+        self.worker_fit = worker_fit(k=self.chi_data['k'],
+                                     data=self.chi_data['for_fit'],
+                                     parameters=self.params,
+                                     fit_range=self.fit_range,
+                                     feff_data=self.shells_feff_data,
+                                     kweight=self.kweight)
+
+        self.worker_fit.run()
+
+        while not self.worker_fit.success:
+            print('Fitting in progress')
+
+        if self.worker_fit.success:
+            print('Fitting Done')
+            self.plot_fit_chi_ft(parameters=self.worker_fit.out.params)
+            self.populate_shells_with_fit_params(parameters=self.worker_fit.out.params)
+
+
+    def plot_fit_chi_ft(self, parameters=None):
+
+        _parameters = parameters
+
+        exafs_fit = self.calculate_exafs_lmfit(self.chi_data['k'],
+                                               _parameters,
+                                               self.shells_feff_data,
+                                               fit_range=None,
+                                               k_weight=self.kweight)
+        _buffer = Group()
+
+        xftf(self.chi_data['k'], np.nan_to_num(exafs_fit), group=_buffer, kweight=0, window='sine', kmin=3, kmax=14)
+
+        pen = mkPen(color='r', width=2, style=Qt.PenStyle.SolidLine)
+
+        self.fit_chi_ref.setData(self.chi_data['k'], np.nan_to_num(exafs_fit), pen=pen)
+
+        self.fit_ft_mag_ref.setData(_buffer.r, _buffer.chir_mag, pen=pen)
+        self.fit_ft_img_ref.setData(_buffer.r, _buffer.chir_im, pen=pen)
+
+
+    def populate_shells_with_fit_params(self, parameters=None):
+
+        _parameters = parameters
+
+        _variables = ['r', 'n', 'ss', 'c3', 'c4', 'e', 's02']
+
+        for i, key in enumerate(self.shells.keys()):
+            for _var in _variables:
+                getattr(self.shells[key]['widget'], 'doubleSpinBox_' + _var + '_value').setValue(
+                    _parameters.valuesdict()[f'{_var}_{i:d}'])
+
+        self.pushButton_fit.setEnabled(True)
+
+
+    def calculate_k(self, k, delE0):
+        k_new = np.sqrt(k ** 2 - 0.26246592 * delE0)
+        return k_new
+
+    def calculate_exafs_lmfit(self, k, parameters, feff_data, fit_range, k_weight=2):
+
+        parameter_dict = parameters.valuesdict()
+
+        if fit_range is None:
+            k1 = 0
+            k2 = len(k)
+        else:
+            k1 = np.where(k >= fit_range[0])[0][0]
+            k2 = np.where(k >= fit_range[1])[0][0]
+
+        exafs = 0
+        for i, data in enumerate(feff_data):
+            feff = data
+            R = parameter_dict['r_' + str(i)]
+            N = parameter_dict['n_' + str(i)]
+            sigma = parameter_dict['ss_' + str(i)]
+            delE0 = parameter_dict['e_' + str(i)]
+            C3 = parameter_dict['c3_' + str(i)]
+            C4 = parameter_dict['c4_' + str(i)]
+            S02 = parameter_dict['s02_' + str(i)]
+
+            k_new = self.calculate_k(k, delE0)
+            exafs = exafs + (S02 * N *
+                             feff.mag_feff.iloc[k1:k2] / (k_new[k1:k2] * R ** 2) *
+                             np.sin(2 * k_new[k1:k2] * R - ((4 / 3) * C3 * k_new[k1:k2] ** 3) + feff.pha_feff.iloc[
+                                                                                                k1:k2] + feff.real_phc.iloc[
+                                                                                                         k1:k2]) *
+                             np.exp(-2 * k[k1:k2] ** 2 * sigma ** 2) *
+                             np.exp((2 / 3) * k[k1:k2] ** 4 * C4) *
+                             np.exp(-2 * R / feff.lam.iloc[k1:k2])) * (k_new[k1:k2] ** k_weight)
+        return exafs
