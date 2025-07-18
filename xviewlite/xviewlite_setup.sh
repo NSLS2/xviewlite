@@ -35,7 +35,7 @@ fi
   echo "$TAG_END"
 } >> "$BASHRC"
 
-echo " Installed alias '$ALIAS_NAME' to $BASHRC"
+echo " Installed alias '$ALIAS_NAME' to '$BASHRC'"
 echo " Run: source ~/.bashrc"
 echo " Then: $ALIAS_NAME"
 
