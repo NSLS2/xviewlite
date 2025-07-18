@@ -29,7 +29,7 @@ fi
 {
   echo ""
   echo "$TAG_START"
-  echo "alias $ALIAS_NAME='conda activate $ENV_NAME &&\\"
+  echo "alias $ALIAS_NAME='conda activate $ENV_NAME && \\"
   echo " export PYTHONPATH=\"\$PYTHONPATH:$XAS_DIR:$XVIEWLITE_DIR\" && \\"
   echo " python3 $XVIEW_SCRIPT'"
   echo "$TAG_END"
