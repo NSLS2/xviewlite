@@ -7,7 +7,7 @@ TAG_START="# ===== XViewLite Launcher ====="
 TAG_END="# ===== END XViewLite Launcher ====="
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-XVIEWLITE_DIR="$SCRIPT_DIR/../"
+XVIEWLITE_DIR="$(realpath "$SCRIPT_DIR/../")"
 XAS_DIR="$(realpath "$SCRIPT_DIR/../../xas")"
 XVIEW_SCRIPT="$XVIEWLITE_DIR/xview.py"
 
