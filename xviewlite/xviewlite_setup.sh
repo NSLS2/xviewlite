@@ -16,7 +16,7 @@ if [ ! -f "$XVIEW_SCRIPT" ]; then
   exit 1
 fi
 
-if [ ! -d "$XAS_DIR"]; then
+if [ ! -d "$XAS_DIR" ]; then
   echo "Expected 'xas' folder not found: $XAS_DIR"
   exit 1
 fi
