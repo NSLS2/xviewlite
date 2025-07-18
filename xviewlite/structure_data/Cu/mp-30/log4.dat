@@ -1,0 +1,16 @@
+ Preparing plane wave scattering amplitudes...
+ Searching for paths...
+   WARNING:  rmax > distance to most distant atom.
+             Some paths may be missing.
+             rmax, ratx   6.00000E+00  0.00000E+00
+    Rmax  6.0000  keep and heap limits   0.0000000   0.0000000
+    Preparing neighbor table
+    nfound  heapsize  maxheap  maxscatt   reff
+      1000      399      400      4      5.2442
+      2000      438      481      4      5.9852
+      3000      311      481      4      5.9852
+    Paths found     3942   (maxheap, maxscatt     481   4)
+ Eliminating path degeneracies...
+    Plane wave chi amplitude filter   2.50%
+    Unique paths     24,  total paths    1062
+ Done with module 4: pathfinder.
