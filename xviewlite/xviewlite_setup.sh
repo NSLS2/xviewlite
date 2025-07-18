@@ -2,12 +2,12 @@
 
 ENV_NAME="2025-2.2-py312-tiled"
 ALIAS_NAME='xviewlite'
-BASHRC='$HOME/.bashrc'
+BASHRC="$HOME/.bashrc"
 TAG_START="# ===== XViewLite Launcher ====="
 TAG_END="# ===== END XViewLite Launcher ====="
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-XVIEWLITE_DIR="$SCRIPT_DIR"
+XVIEWLITE_DIR="$SCRIPT_DIR/../"
 XAS_DIR="$(realpath "$SCRIPT_DIR/../../xas")"
 XVIEW_SCRIPT="$XVIEWLITE_DIR/xview.py"
 
@@ -22,7 +22,7 @@ if [ ! -d "$XAS_DIR" ]; then
 fi
 
 if grep -q "$TAG_START" "$BASHRC"; then
-  echo "Alias '$ALIAS_NAME' already exists in $BASHRC."
+  echo "Alias '$ALIAS_NAME' already exists in '$BASHRC'."
   exit 0
 fi
 
