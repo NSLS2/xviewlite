@@ -9,7 +9,7 @@ TAG_END="# ===== END XViewLite Launcher ====="
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 XVIEWLITE_DIR="$SCRIPT_DIR"
 XAS_DIR="$(realpath "$SCRIPT_DIR/..xas")"
-XVIEW_SCRIPT="XVIEWLITE_DIR/xviewlite/xview.py"
+XVIEW_SCRIPT="$XVIEWLITE_DIR/xviewlite/xview.py"
 
 if [ ! -f "$XVIEW_SCRIPT" ]; then
   echo "Launch script not found: $XVIEW_SCRIPT"
