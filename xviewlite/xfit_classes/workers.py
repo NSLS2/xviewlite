@@ -1,4 +1,5 @@
-from pymatgen.ext.matproj import MPRester
+# from pymatgen.ext.matproj import MPRester
+from mp_api.client import MPRester
 from PyQt5.QtCore import QObject, pyqtSignal
 from larch.xafs import feffrunner
 from lmfit import minimize
