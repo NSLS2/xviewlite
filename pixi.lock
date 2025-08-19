@@ -4168,8 +4168,8 @@ packages:
   requires_python: '>=3.9'
 - pypi: .
   name: xviewlite
-  version: 0.1.dev222+gcb751527d.d20250819
-  sha256: 361600d9638fcf9978eb9159337d1913097ea15686f61f79d9eafc1075595375
+  version: 0.1.dev223+gbcba236a5.d20250819
+  sha256: 99eb6f07982bf34805c4e068ce4f23a5b3d7a68fa4ae9d28174a0d8bae6ca6dc
   requires_dist:
   - pyqt5
   - pyqtgraph
