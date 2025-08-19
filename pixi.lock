@@ -221,11 +221,11 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a9/28/d06dca77a3e577d0efcdb5efaaf8a6d64829503b8f4d85c7f10eb1f02c1b/wxmplot-2025.1.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4c/d9/4451392d3d6ba45aa23aa77a6f1a9970b43351b956bf61e10fd513a1dc38/wxPython-4.2.3.tar.gz
       - pypi: https://files.pythonhosted.org/packages/f1/6e/501e11ac145ec679955c431b6aa9554b6c0f7b90b65fa9ecce6f364b4650/wxutils-0.3.5-py3-none-any.whl
-      - pypi: git+https://github.com/NSLS-II-ISS/xas?branch=main#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
+      - pypi: git+https://github.com/NSLS-II-ISS/xas#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
       - pypi: https://files.pythonhosted.org/packages/38/8b/7ec325b4e9e78beefc2d025b01ee8a2fde771ef7c957c3bff99b9e1fbffa/xraydb-4.5.8-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7b/05/48c990374cbd4769c6d2488c6f982caf568c0b2c96703d310fd24928c941/xraylarch-2025.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d6/7d/b77455d7c7c51255b2992b429107fab811b2e36ceaf76da1e55a045dc568/xyzservices-2025.4.0-py3-none-any.whl
-      - pypi: ./
+      - pypi: .
   dev:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -472,11 +472,11 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a9/28/d06dca77a3e577d0efcdb5efaaf8a6d64829503b8f4d85c7f10eb1f02c1b/wxmplot-2025.1.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4c/d9/4451392d3d6ba45aa23aa77a6f1a9970b43351b956bf61e10fd513a1dc38/wxPython-4.2.3.tar.gz
       - pypi: https://files.pythonhosted.org/packages/f1/6e/501e11ac145ec679955c431b6aa9554b6c0f7b90b65fa9ecce6f364b4650/wxutils-0.3.5-py3-none-any.whl
-      - pypi: git+https://github.com/NSLS-II-ISS/xas?branch=main#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
+      - pypi: git+https://github.com/NSLS-II-ISS/xas#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
       - pypi: https://files.pythonhosted.org/packages/38/8b/7ec325b4e9e78beefc2d025b01ee8a2fde771ef7c957c3bff99b9e1fbffa/xraydb-4.5.8-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7b/05/48c990374cbd4769c6d2488c6f982caf568c0b2c96703d310fd24928c941/xraylarch-2025.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d6/7d/b77455d7c7c51255b2992b429107fab811b2e36ceaf76da1e55a045dc568/xyzservices-2025.4.0-py3-none-any.whl
-      - pypi: ./
+      - pypi: .
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
   sha256: fe51de6107f9edc7aa4f786a70f4a883943bc9d39b3bb7307c04c41410990726
@@ -4073,7 +4073,7 @@ packages:
   - coverage ; extra == 'test'
   - wxutils[dev,doc,test] ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: git+https://github.com/NSLS-II-ISS/xas?branch=main#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
+- pypi: git+https://github.com/NSLS-II-ISS/xas#9158e6eaa8ac8691c71506d2ddaa6f63c406c12a
   name: xas
   version: 0.0.1.post408+g9158e6e
 - pypi: https://files.pythonhosted.org/packages/38/8b/7ec325b4e9e78beefc2d025b01ee8a2fde771ef7c957c3bff99b9e1fbffa/xraydb-4.5.8-py3-none-any.whl
@@ -4166,10 +4166,25 @@ packages:
   - xraylarch[jupyter,wxgui] ; extra == 'larix'
   - xraylarch[dev,doc,epics,jupyter,qtgui,wxgui] ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: ./
+- pypi: .
   name: xviewlite
-  version: 0.1.dev221+g25fecf0c6.d20250818
-  sha256: 2b4cb8f97b4fa9dc9c9712ad85249eeebe204676b8c21b862fe97239730365c1
+  version: 0.1.dev222+gcb751527d.d20250819
+  sha256: 361600d9638fcf9978eb9159337d1913097ea15686f61f79d9eafc1075595375
+  requires_dist:
+  - pyqt5
+  - pyqtgraph
+  - xas @ git+https://github.com/NSLS-II-ISS/xas
+  - xraylarch[larix]
+  - codecov ; extra == 'dev'
+  - coverage ; extra == 'dev'
+  - flake8 ; extra == 'dev'
+  - ipython ; extra == 'dev'
+  - matplotlib ; extra == 'dev'
+  - numpydoc ; extra == 'dev'
+  - pytest ; extra == 'dev'
+  - sphinx ; extra == 'dev'
+  - sphinx-copybutton ; extra == 'dev'
+  - sphinx-rtd-theme ; extra == 'dev'
   requires_python: '>=3.10'
 - pypi: https://files.pythonhosted.org/packages/d6/7d/b77455d7c7c51255b2992b429107fab811b2e36ceaf76da1e55a045dc568/xyzservices-2025.4.0-py3-none-any.whl
   name: xyzservices
