@@ -1,0 +1,106 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
+
+[project]
+name = 'xviewlite'
+dynamic = ["version"]
+description = "ISS data visualisation"
+readme = "README.rst"
+authors = [{name = "Brookhaven National Laboratory", email = "istavitski@bnl.gov"}]
+license = { file = "LICENSE"}
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+]
+requires-python = ">=3.10"
+dependencies = [
+    "PyQt5",
+    "pyqtgraph",
+    "xraylarch[larix]",
+    "xas @ git+https://github.com/NSLS-II-ISS/xas",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/NSLS2/xviewlite"
+"Bug Tracker" = "https://github.com/NSLS2/xviewlite/issues"
+
+[project.optional-dependencies]
+dev = [
+    "codecov",
+    "coverage",
+    "flake8",
+    "pytest",
+    "sphinx",
+    "ipython",
+    "matplotlib",
+    "numpydoc",
+    "sphinx-copybutton",
+    "sphinx_rtd_theme",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "xviewlite/**/*.py",
+    "xviewlite/**/*.ui",
+    "AUTHORS.rst",
+    "CONTRIBUTING.rst",
+    "LICENSE",
+    "README.rst",
+    "requirements.txt",
+    "versioneer.py",
+    "xviewlite/_version.py",
+    "xviewlite/ui/*.ui",
+    "xviewlite/spectra_db/*.json",
+    "docs/**/*.rst",
+    "docs/**/conf.py",
+    "docs/**/Makefile",
+    "docs/**/make.bat",
+]
+exclude = [
+    "**/__pycache__",
+    "**/*.py[co]",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    'xviewlite/spectra_db/*.json',
+    'xviewlite/ui/*.ui',
+    "xviewlite/**/*.py",
+    "xviewlite/**/*.ui",
+]
+exclude = [
+    "**/docs",
+    "**/tests",
+]
+
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+
+[tool.pixi.pypi-dependencies]
+xviewlite = { path = ".", editable = false }
+
+[tool.pixi.tasks]
+xviewlite = "python xviewlite/xview.py"
+
+
+[tool.pixi.feature.dev.pypi-dependencies]
+xviewlite = { path = ".", editable = false, extras = ["dev"] }
+
+[tool.pixi.feature.dev.tasks]
+lint = "coverage run -m pytest && coverage report -m && codecov && flake8"
+docs = { cmd = "make -C docs html", depends-on = ["lint"] }
