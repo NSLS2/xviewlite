@@ -219,7 +219,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ca/51/5447876806d1088a0f8f71e16542bf350918128d0a69437df26047c8e46f/widgetsnbextension-4.0.14-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0c/37/6faf15cfa41bf1f3dba80cd3f5ccc6622dfccb660ab26ed79f0178c7497f/wrapt-1.17.3-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a9/28/d06dca77a3e577d0efcdb5efaaf8a6d64829503b8f4d85c7f10eb1f02c1b/wxmplot-2025.1.4-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/4c/d9/4451392d3d6ba45aa23aa77a6f1a9970b43351b956bf61e10fd513a1dc38/wxPython-4.2.3.tar.gz
+      - pypi: https://files.pythonhosted.org/packages/22/43/81657a6b126ffc19163500a8184d683cec08eb4e1d06905cd0c371c702d0/wxpython-4.2.5.tar.gz
       - pypi: https://files.pythonhosted.org/packages/f1/6e/501e11ac145ec679955c431b6aa9554b6c0f7b90b65fa9ecce6f364b4650/wxutils-0.3.5-py3-none-any.whl
       - pypi: git+https://github.com/NSLS-II-ISS/xas#20a466cb46a30bd6aa87102f6020a3a6f5ca82f4
       - pypi: https://files.pythonhosted.org/packages/38/8b/7ec325b4e9e78beefc2d025b01ee8a2fde771ef7c957c3bff99b9e1fbffa/xraydb-4.5.8-py3-none-any.whl
@@ -470,7 +470,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ca/51/5447876806d1088a0f8f71e16542bf350918128d0a69437df26047c8e46f/widgetsnbextension-4.0.14-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0c/37/6faf15cfa41bf1f3dba80cd3f5ccc6622dfccb660ab26ed79f0178c7497f/wrapt-1.17.3-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a9/28/d06dca77a3e577d0efcdb5efaaf8a6d64829503b8f4d85c7f10eb1f02c1b/wxmplot-2025.1.4-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/4c/d9/4451392d3d6ba45aa23aa77a6f1a9970b43351b956bf61e10fd513a1dc38/wxPython-4.2.3.tar.gz
+      - pypi: https://files.pythonhosted.org/packages/22/43/81657a6b126ffc19163500a8184d683cec08eb4e1d06905cd0c371c702d0/wxpython-4.2.5.tar.gz
       - pypi: https://files.pythonhosted.org/packages/f1/6e/501e11ac145ec679955c431b6aa9554b6c0f7b90b65fa9ecce6f364b4650/wxutils-0.3.5-py3-none-any.whl
       - pypi: git+https://github.com/NSLS-II-ISS/xas#20a466cb46a30bd6aa87102f6020a3a6f5ca82f4
       - pypi: https://files.pythonhosted.org/packages/38/8b/7ec325b4e9e78beefc2d025b01ee8a2fde771ef7c957c3bff99b9e1fbffa/xraydb-4.5.8-py3-none-any.whl
@@ -4051,14 +4051,14 @@ packages:
   - coverage ; extra == 'test'
   - wxmplotls[dev,doc,test] ; extra == 'all'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/4c/d9/4451392d3d6ba45aa23aa77a6f1a9970b43351b956bf61e10fd513a1dc38/wxPython-4.2.3.tar.gz
+- pypi: https://files.pythonhosted.org/packages/22/43/81657a6b126ffc19163500a8184d683cec08eb4e1d06905cd0c371c702d0/wxpython-4.2.5.tar.gz
   name: wxpython
-  version: 4.2.3
-  sha256: 20d6e0c927e27ced85643719bd63e9f7fd501df6e9a8aab1489b039897fd7c01
+  version: 4.2.5
+  sha256: 44e836d1bccd99c38790bb034b6ecf70d9060f6734320560f7c4b0d006144793
   requires_dist:
   - numpy ; python_full_version >= '3.0' and python_full_version < '3.12'
   - typing-extensions ; python_full_version < '3.11'
-  requires_python: '>=3.9'
+  requires_python: '>=3.10'
 - pypi: https://files.pythonhosted.org/packages/f1/6e/501e11ac145ec679955c431b6aa9554b6c0f7b90b65fa9ecce6f364b4650/wxutils-0.3.5-py3-none-any.whl
   name: wxutils
   version: 0.3.5
@@ -4168,12 +4168,12 @@ packages:
   requires_python: '>=3.9'
 - pypi: ./
   name: xviewlite
-  version: 0.1.dev226+gd4d0a30c2.d20260312
-  sha256: e573ea10d5fdfcb53f2104425342e5c467c909e8b19a288d82afbdbee5921ab4
+  version: 0.1.dev227+gc5edd9914.d20260316
+  sha256: 4179f3adec7c6c5436334545ae6fa235d997dcfc2b96e472d8aeb951dabfb30a
   requires_dist:
   - pyqt5
   - pyqtgraph
-  - setuptools<81
+  - wxpython>=4.2.5
   - xas @ git+https://github.com/NSLS-II-ISS/xas
   - xraylarch[larix]
   - codecov ; extra == 'dev'
