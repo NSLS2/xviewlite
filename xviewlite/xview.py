@@ -17,6 +17,16 @@ class XviewGui(*uic.loadUiType(ui_path)):
     def __init__(self,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        try:
+            db = databroker.Broker.named('iss')
+            print('db connected')
+        except Exception as e:
+            print(f'Failed to open ISS databroker: {e}')
+            db = None
+
+        self.db = db
+
         self.setupUi(self)
         self.project = XASProject()
 
