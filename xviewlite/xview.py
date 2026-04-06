@@ -1,5 +1,6 @@
 import sys
 from importlib import resources
+import databroker
 from PyQt5 import  QtWidgets, uic
 
 from xas.xasproject import XASProject
