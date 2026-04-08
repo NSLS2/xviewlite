@@ -18,6 +18,7 @@ requires-python = ">=3.10"
 dependencies = [
     "PyQt5",
     "pyqtgraph",
+    "wxpython>=4.2.5",
     "xraylarch[larix]",
     "xas @ git+https://github.com/NSLS-II-ISS/xas",
 ]
