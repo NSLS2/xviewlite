@@ -50,7 +50,7 @@ ATOMIC_SYMBOL_DICT = {'element': [atomic_symbol(i) for i in range(20, 93)]}
 EDGES = {'edges': ['K', 'L3', 'L2', 'L1', 'M5']}
 
 STRUCTURE_FOLDER = os.path.join(pkg_resources.resource_filename('xviewlite', ''), 'structure_data')
-os.makedirs(STRUCTURE_FOLDER, exist_ok=True)
+# os.makedirs(STRUCTURE_FOLDER, exist_ok=True)
 
 
 class UIXFIT(*uic.loadUiType(ui_path)):
