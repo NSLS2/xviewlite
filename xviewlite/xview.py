@@ -40,6 +40,9 @@ class XviewGui(*uic.loadUiType(ui_path)):
         self.widget_xfit = widget_xview_xfit.UIXFIT(parent=self)
         self.layout_xfit.addWidget(self.widget_xfit)
 
+        self.widget_rixs = widget_xview_rixs.UIXviewRIXS(db=db, parent=self)
+        self.layout_rixs.addWidget(self.widget_rixs)
+
     def set_figure(self, axis, canvas, label_x='', label_y=''):
         axis.legend(fontsize='small')
         axis.grid(alpha=0.4)
