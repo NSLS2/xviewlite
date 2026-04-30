@@ -5,7 +5,7 @@ from PyQt5 import  QtWidgets, uic
 
 from xas.xasproject import XASProject
 
-from widgets import widget_xview_data, widget_xview_project, widget_xview_xfit
+from widgets import widget_xview_data, widget_xview_project, widget_xview_xfit, widget_xview_rixs
 if sys.platform == 'darwin':
     with resources.path('xviewlite.ui', 'ui_xview-mac.ui') as path:
         ui_path = str(path)
