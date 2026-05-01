@@ -27,9 +27,9 @@ from xas.vonhamos import ProcessingThread, ProcessingWorker, ProcessingTask
 from queue import Queue
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_data-mac.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_data-mac.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xview_rixs.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xview_rixs.ui')
 
 pg.setConfigOption('leftButtonPan', False)
 

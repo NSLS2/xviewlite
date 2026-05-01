@@ -41,9 +41,9 @@ from xviewlite.xfit_classes.utils import read_lineEdit_and_perform_sanity_check,
 from scipy.interpolate import interp1d
 
 if platform == 'darwin':
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xfit.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xfit.ui')
 else:
-    ui_path = pkg_resources.resource_filename('xview', 'ui/ui_xfit.ui')
+    ui_path = pkg_resources.resource_filename('xviewlite', 'ui/ui_xfit.ui')
 
 
 ATOMIC_SYMBOL_DICT = {'element': [atomic_symbol(i) for i in range(20, 93)]}
