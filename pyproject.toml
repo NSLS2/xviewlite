@@ -21,6 +21,9 @@ dependencies = [
     "wxpython>=4.2.5",
     "xraylarch[larix]",
     "xas @ git+https://github.com/NSLS-II-ISS/xas",
+    "isstools @ git+https://github.com/NSLS2/isstools",
+    "databroker",
+    "opencv-python-headless",
 ]
 
 [project.urls]
