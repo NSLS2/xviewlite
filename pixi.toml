@@ -1,0 +1,33 @@
+[workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+[dependencies]
+python = ">=3.10"
+ipython = ">=9.14.1,<10"
+databroker = ">=2.0.1,<3"
+
+
+[pypi-dependencies]
+pyqt5 = "*"
+pyqtgraph = "*"
+setuptools = "<82"
+xviewlite = { path = ".", editable = false }
+xas = { git = "https://github.com/NSLS-II-ISS/xas" }
+xraylarch = { extras = ["larix"] }
+
+[tasks]
+xviewlite = "python xviewlite/xview.py"
+ipython = "unset SESSION_MANAGER PYTHONPATH && MPLBACKEND=qt5agg ipython --ipython-dir=./ipython_profile"
+
+
+[feature.dev.pypi-dependencies]
+xviewlite = { path = ".", editable = false, extras = ["dev"] }
+
+[feature.dev.tasks]
+lint = "coverage run -m pytest && coverage report -m && codecov && flake8"
+docs = { cmd = "make -C docs html", depends-on = ["lint"] }
