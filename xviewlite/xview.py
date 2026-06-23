@@ -4,7 +4,7 @@ from PyQt5 import  QtWidgets, uic
 
 from xas.xasproject import XASProject
 
-from widgets import widget_xview_data, widget_xview_project, widget_xview_xfit
+from xviewlite.widgets import widget_xview_data, widget_xview_project, widget_xview_xfit
 if sys.platform == 'darwin':
     with resources.path('xviewlite.ui', 'ui_xview-mac.ui') as path:
         ui_path = str(path)
@@ -35,6 +35,18 @@ class XviewGui(*uic.loadUiType(ui_path)):
         axis.set_ylabel(label_y, size='13')
         axis.set_xlabel(label_x, size='13')
         canvas.draw_idle()
+
+# app = QtWidgets.QApplication(sys.argv)
+# xview_gui = XviewGui()
+#
+# def xview():
+#     xview_gui.show()
+#
+# xview()
+#
+# # main = XviewGui()
+# # main.show()
+# # sys.exit(app.exec_())
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

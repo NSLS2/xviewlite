@@ -14,9 +14,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     NavigationToolbar2QT as NavigationToolbar
 from sys import platform
 from pathlib import Path
-from dialogs.BasicDialogs import message_box
+from xviewlite.dialogs.BasicDialogs import message_box
 from matplotlib.figure import Figure
-from elements.figure_update import update_figure
+from xviewlite.elements.figure_update import update_figure
 import sys
 from xas.xray import k2e, e2k
 from xas.file_io import load_binned_df_from_file, dump_tiff_images

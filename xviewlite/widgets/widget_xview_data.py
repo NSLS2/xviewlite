@@ -16,8 +16,8 @@ from pathlib import Path
 
 from matplotlib.figure import Figure
 from xas.xasproject import XASDataSet
-from elements.figure_update import update_figure
-from dialogs.BasicDialogs import message_box
+from xviewlite.elements.figure_update import update_figure
+from xviewlite.dialogs.BasicDialogs import message_box
 from xas.file_io import load_binned_df_from_file, load_binned_df_and_extended_data_from_file
 import copy
 
