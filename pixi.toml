@@ -12,6 +12,7 @@ python = ">=3.10"
 
 [pypi-dependencies]
 pyqt5 = "*"
+qtpy = "*"
 pyqtgraph = "*"
 setuptools = "<82"
 xviewlite = { path = ".", editable = false }
