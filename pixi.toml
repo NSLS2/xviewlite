@@ -15,7 +15,7 @@ pyqt5 = "*"
 qtpy = "*"
 pyqtgraph = "*"
 setuptools = "<82"
-xviewlite = { path = ".", editable = false }
+xviewlite = { path = ".", editable = true }
 xas = { git = "https://github.com/NSLS-II-ISS/xas" }
 xraylarch = { extras = ["larix"] }
 
@@ -24,7 +24,7 @@ xviewlite = "python xviewlite/xview.py"
 
 
 [feature.dev.pypi-dependencies]
-xviewlite = { path = ".", editable = false, extras = ["dev"] }
+xviewlite = { path = ".", editable = true, extras = ["dev"] }
 
 [feature.dev.tasks]
 lint = "coverage run -m pytest && coverage report -m && codecov && flake8"
