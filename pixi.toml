@@ -1,0 +1,31 @@
+[workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+[dependencies]
+python = ">=3.10"
+
+
+[pypi-dependencies]
+pyqt5 = "*"
+qtpy = "*"
+pyqtgraph = "*"
+setuptools = "<82"
+xviewlite = { path = ".", editable = true }
+xas = { git = "https://github.com/NSLS-II-ISS/xas" }
+xraylarch = { extras = ["larix"] }
+
+[tasks]
+xviewlite = "python xviewlite/xview.py"
+
+
+[feature.dev.pypi-dependencies]
+xviewlite = { path = ".", editable = true, extras = ["dev"] }
+
+[feature.dev.tasks]
+lint = "coverage run -m pytest && coverage report -m && codecov && flake8"
+docs = { cmd = "make -C docs html", depends-on = ["lint"] }
