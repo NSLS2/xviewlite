@@ -15,6 +15,7 @@ pyqt5 = "*"
 qtpy = "*"
 pyqtgraph = "*"
 setuptools = "<82"
+pandas = "<2.2.0"
 xviewlite = { path = ".", editable = true }
 xas = { git = "https://github.com/NSLS-II-ISS/xas" }
 xraylarch = { extras = ["larix"] }
