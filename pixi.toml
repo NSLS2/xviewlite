@@ -8,6 +8,7 @@ dev = { features = ["dev"], solve-group = "default" }
 
 [dependencies]
 python = ">=3.10"
+pandas = "2.3.0"
 
 
 [pypi-dependencies]
@@ -15,7 +16,6 @@ pyqt5 = "*"
 qtpy = "*"
 pyqtgraph = "*"
 setuptools = "<82"
-pandas = "<2.2.0"
 xviewlite = { path = ".", editable = true }
 xas = { git = "https://github.com/NSLS-II-ISS/xas" }
 xraylarch = { extras = ["larix"] }
