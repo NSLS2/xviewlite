@@ -51,6 +51,7 @@ source = "vcs"
 include = [
     "xviewlite/**/*.py",
     "xviewlite/**/*.ui",
+    "xviewlite/structure_data/",
     "AUTHORS.rst",
     "CONTRIBUTING.rst",
     "LICENSE",
@@ -76,6 +77,7 @@ include = [
     'xviewlite/ui/*.ui',
     "xviewlite/**/*.py",
     "xviewlite/**/*.ui",
+    "xviewlite/structure_data/",
 ]
 exclude = [
     "**/docs",
