@@ -10,6 +10,7 @@ dev = { features = ["dev"], solve-group = "default" }
 [dependencies]
 python = ">=3.10"
 pandas = "2.3.0"
+pyzmq = ">=27.2.0,<28"
 
 
 [pypi-dependencies]
